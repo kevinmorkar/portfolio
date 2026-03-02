@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kevin Morkar - Control & Automation Engineer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --green: #00ff7f; --cyan: #00d4ff; --dark: #050a0e; --card-bg: rgba(255,255,255,0.04); --border: rgba(0,255,127,0.2); }
+        html { scroll-behavior: smooth; }
+        body { font-family: "Poppins", sans-serif; background: var(--dark); color: #e0e0e0; overflow-x: hidden; line-height: 1.7; }
+
+        .bg-animation { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+        .circuit-lines {
+            position: absolute; inset: 0;
+            background:
+                linear-gradient(90deg, transparent 49.5%, rgba(0,255,127,0.04) 50%, transparent 50.5%),
+                linear-gradient(0deg, transparent 49.5%, rgba(0,255,127,0.04) 50%, transparent 50.5%),
+                radial-gradient(ellipse at 20% 50%, rgba(0,255,127,0.07) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(0,212,255,0.07) 0%, transparent 60%),
+                radial-gradient(ellipse at 60% 80%, rgba(0,255,127,0.05) 0%, transparent 50%);
+            background-size: 60px 60px, 60px 60px, 100% 100%, 100% 100%, 100% 100%;
+            animation: bgShift 30s linear infinite;
+        }
+        @keyframes bgShift { 0% { background-position: 0 0,0 0,0 0,0 0,0 0; } 100% { background-position: 60px 60px,60px 60px,0 0,0 0,0 0; } }
+        .particle { position: absolute; bottom: -10px; background: var(--green); border-radius: 50%; opacity: 0.6; animation: floatUp linear infinite; box-shadow: 0 0 6px var(--green); }
+        @keyframes floatUp { 0% { transform: translateY(0) scale(1); opacity: 0.6; } 100% { transform: translateY(-110vh) scale(0); opacity: 0; } }
+        section, nav, footer { position: relative; z-index: 1; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+        .navbar { position: fixed; top: 0; left: 0; right: 0; padding: 18px 0; background: rgba(5,10,14,0.6); backdrop-filter: blur(20px); border-bottom: 1px solid transparent; z-index: 999; transition: all 0.4s; }
+        .navbar.scrolled { background: rgba(5,10,14,0.95); border-color: var(--border); box-shadow: 0 4px 30px rgba(0,255,127,0.1); padding: 12px 0; }
+        .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.4em; font-weight: 800; color: white; letter-spacing: 1px; }
+        .logo span { color: var(--green); }
+        .nav-menu { display: flex; list-style: none; gap: 2rem; }
+        .nav-menu a { color: #aaa; text-decoration: none; font-size: 0.9em; font-weight: 500; transition: all 0.3s; position: relative; }
+        .nav-menu a:hover { color: var(--green); text-shadow: 0 0 10px var(--green); }
+        .nav-menu a::after { content: ""; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: var(--green); transition: width 0.3s; }
+        .nav-menu a:hover::after { width: 100%; }
+        .hamburger { display: none; font-size: 1.5em; cursor: pointer; color: var(--green); }
+
+        #hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 120px 24px 80px; background: radial-gradient(ellipse at center, rgba(0,255,127,0.06) 0%, transparent 70%); }
+        .hero-content { max-width: 900px; }
+        .hero-tag { display: inline-block; background: rgba(0,255,127,0.1); border: 1px solid var(--border); color: var(--green); padding: 8px 20px; border-radius: 50px; font-size: 0.9em; margin-bottom: 1.5rem; animation: fadeUp 0.8s ease both; }
+        .hero-content h1 { font-size: clamp(3em,8vw,5.5em); font-weight: 800; color: white; line-height: 1.1; margin-bottom: 1rem; animation: fadeUp 0.8s 0.1s ease both; }
+        .hero-content h1 .highlight { background: linear-gradient(90deg, var(--green), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero-sub { font-size: 1.1em; color: #888; max-width: 650px; margin: 0 auto 2.5rem; animation: fadeUp 0.8s 0.2s ease both; }
+        .hero-stats { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 2.5rem; animation: fadeUp 0.8s 0.3s ease both; }
+        .hero-stat { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px 24px; text-align: center; backdrop-filter: blur(10px); }
+        .hero-stat span { display: block; font-size: 1.8em; font-weight: 700; background: linear-gradient(90deg, var(--green), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero-stat p { font-size: 0.75em; color: #777; margin-top: 4px; }
+        .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; animation: fadeUp 0.8s 0.4s ease both; }
+        .btn-primary, .btn-secondary { padding: 14px 32px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 0.95em; transition: all 0.3s; display: inline-block; }
+        .btn-primary { background: linear-gradient(135deg, var(--green), var(--cyan)); color: #050a0e; box-shadow: 0 8px 25px rgba(0,255,127,0.3); }
+        .btn-primary:hover { transform: translateY(-4px); box-shadow: 0 15px 35px rgba(0,255,127,0.5); }
+        .btn-secondary { background: transparent; color: white; border: 2px solid rgba(255,255,255,0.2); }
+        .btn-secondary:hover { border-color: var(--green); color: var(--green); transform: translateY(-4px); }
+        .scroll-indicator { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); text-align: center; color: #555; font-size: 0.75em; }
+        .scroll-arrow { width: 20px; height: 20px; border-right: 2px solid var(--green); border-bottom: 2px solid var(--green); transform: rotate(45deg); margin: 0 auto 8px; animation: bounce 1.5s infinite; }
+        @keyframes bounce { 0%,100% { transform: rotate(45deg) translateY(0); } 50% { transform: rotate(45deg) translateY(6px); } }
+
+        .section { padding: 100px 0; }
+        .dark-section { background: rgba(255,255,255,0.02); border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .section-title { font-size: clamp(2em,5vw,2.8em); font-weight: 700; text-align: center; margin-bottom: 3rem; background: linear-gradient(90deg, white, var(--green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; }
+        .section-title::after { content: ""; display: block; width: 60px; height: 3px; background: linear-gradient(90deg, var(--green), var(--cyan)); margin: 12px auto 0; border-radius: 2px; }
+
+        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+        .about-text p { color: #aaa; margin-bottom: 1.2rem; font-size: 1.05em; }
+        .about-text strong { color: var(--green); }
+        .about-tags { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 1.5rem; }
+        .about-tags span { background: var(--card-bg); border: 1px solid var(--border); padding: 6px 14px; border-radius: 50px; font-size: 0.82em; color: #aaa; }
+        .about-highlights { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .highlight-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s; }
+        .highlight-card:hover { border-color: var(--green); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,255,127,0.15); }
+        .hc-icon { font-size: 2em; margin-bottom: 0.6rem; }
+        .highlight-card h4 { color: var(--green); font-size: 0.95em; margin-bottom: 0.4rem; }
+        .highlight-card p { color: #777; font-size: 0.8em; }
+
+        .sn-autohaus-wrapper { position: relative; margin-bottom: 3rem; }
+        .sn-badge { display: inline-block; background: linear-gradient(135deg, var(--green), var(--cyan)); color: #050a0e; font-weight: 700; font-size: 0.8em; padding: 6px 18px; border-radius: 50px 50px 0 0; }
+        .sn-autohaus-card { background: linear-gradient(135deg, rgba(0,255,127,0.07) 0%, rgba(0,212,255,0.05) 100%); border: 1px solid rgba(0,255,127,0.4); border-radius: 0 20px 20px 20px; padding: 2.5rem; box-shadow: 0 0 40px rgba(0,255,127,0.1), inset 0 1px 0 rgba(0,255,127,0.2); transition: all 0.4s; }
+        .sn-autohaus-card:hover { box-shadow: 0 0 60px rgba(0,255,127,0.2), 0 20px 60px rgba(0,0,0,0.4); transform: translateY(-6px); }
+        .sna-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(0,255,127,0.2); }
+        .sna-title-block h3 { font-size: 2em; font-weight: 700; background: linear-gradient(90deg, var(--green), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.3rem; }
+        .sna-title-block h4 { color: #ccc; font-size: 1.1em; font-weight: 500; margin-bottom: 0.5rem; }
+        .sna-date { color: var(--green); font-size: 0.9em; background: rgba(0,255,127,0.1); padding: 4px 12px; border-radius: 20px; }
+        .sna-impact { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+        .impact-stat { text-align: center; background: rgba(0,255,127,0.08); border: 1px solid rgba(0,255,127,0.3); border-radius: 12px; padding: 14px 20px; min-width: 110px; }
+        .impact-stat span { display: block; font-size: 1.6em; font-weight: 800; color: var(--green); line-height: 1; margin-bottom: 6px; }
+        .impact-stat p { font-size: 0.72em; color: #888; }
+        .sna-body { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+        .sna-col h5 { color: var(--green); margin-bottom: 1rem; font-size: 0.95em; }
+        .sna-col ul { list-style: none; }
+        .sna-col li { color: #bbb; font-size: 0.9em; padding: 0.5rem 0 0.5rem 1.8rem; position: relative; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .sna-col li::before { content: "⚡"; position: absolute; left: 0; color: var(--green); }
+        .sna-col li strong { color: #fff; }
+        .sna-tools { display: flex; flex-wrap: wrap; gap: 0.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(0,255,127,0.15); }
+        .sna-tools span { background: rgba(0,255,127,0.1); border: 1px solid rgba(0,255,127,0.3); color: var(--green); font-size: 0.8em; padding: 4px 12px; border-radius: 50px; transition: all 0.3s; cursor: default; }
+        .sna-tools span:hover { background: var(--green); color: #050a0e; }
+
+        .exp-secondary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .exp-secondary-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 2rem; transition: all 0.3s; }
+        .exp-secondary-card:hover { border-color: rgba(0,212,255,0.4); transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,212,255,0.1); }
+        .esc-header { margin-bottom: 1.2rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .esc-header h3 { color: var(--cyan); font-size: 1.3em; margin-bottom: 0.3rem; }
+        .esc-header h4 { color: #aaa; font-size: 0.9em; font-weight: 500; margin-bottom: 0.5rem; }
+        .esc-date { color: var(--cyan); font-size: 0.8em; background: rgba(0,212,255,0.1); padding: 3px 10px; border-radius: 20px; }
+        .esc-body ul { list-style: none; margin-bottom: 1.2rem; }
+        .esc-body li { color: #999; font-size: 0.88em; padding: 0.4rem 0 0.4rem 1.6rem; position: relative; }
+        .esc-body li::before { content: "▸"; position: absolute; left: 0; color: var(--cyan); }
+        .esc-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .esc-tags span { background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.2); color: var(--cyan); font-size: 0.75em; padding: 3px 10px; border-radius: 50px; }
+
+        .skills-container { max-width: 900px; margin: 0 auto; }
+        .skill-bar-item { margin-bottom: 1.8rem; }
+        .skill-label { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9em; color: #ccc; }
+        .skill-pct { color: var(--green); font-weight: 600; }
+        .skill-track { background: rgba(255,255,255,0.06); border-radius: 50px; height: 10px; overflow: hidden; }
+        .skill-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--green), var(--cyan)); border-radius: 50px; transition: width 1.8s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 0 10px rgba(0,255,127,0.4); }
+
+        .edu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3rem; }
+        .edu-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; display: flex; gap: 1.5rem; align-items: flex-start; transition: all 0.3s; }
+        .edu-card:hover { border-color: var(--green); transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,255,127,0.1); }
+        .edu-icon { font-size: 2.5em; flex-shrink: 0; }
+        .edu-degree { display: block; font-weight: 700; color: var(--green); font-size: 1.05em; margin-bottom: 0.3rem; }
+        .edu-school { display: block; color: #ccc; font-size: 0.88em; margin-bottom: 0.3rem; }
+        .edu-year { display: block; color: var(--cyan); font-size: 0.8em; margin-bottom: 0.8rem; background: rgba(0,212,255,0.1); padding: 2px 10px; border-radius: 20px; width: fit-content; }
+        .edu-content p { color: #888; font-size: 0.85em; }
+        .sub-title { text-align: center; color: white; font-size: 1.5em; font-weight: 600; margin-bottom: 1.5rem; }
+
+        .lang-grid { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
+        .lang-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem 2rem; text-align: center; transition: all 0.3s; min-width: 140px; }
+        .lang-card:hover { border-color: var(--green); transform: translateY(-5px); }
+        .lang-flag { display: block; font-size: 2.5em; margin-bottom: 0.5rem; }
+        .lang-name { display: block; font-weight: 600; color: white; margin-bottom: 0.4rem; }
+        .lang-level { display: inline-block; font-size: 0.8em; padding: 3px 12px; border-radius: 50px; font-weight: 600; }
+        .native { background: rgba(0,255,127,0.15); color: var(--green); border: 1px solid rgba(0,255,127,0.3); }
+        .b1 { background: rgba(0,212,255,0.15); color: var(--cyan); border: 1px solid rgba(0,212,255,0.3); }
+
+        .research-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+        .research-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 1.8rem; cursor: pointer; transition: all 0.3s; }
+        .research-card:hover, .research-card.active { border-color: var(--green); background: rgba(0,255,127,0.05); transform: translateY(-6px); box-shadow: 0 15px 40px rgba(0,255,127,0.15); }
+        .rc-icon { font-size: 2em; margin-bottom: 0.8rem; }
+        .research-card h4 { color: var(--green); font-size: 1em; margin-bottom: 0.7rem; }
+        .research-card p { color: #888; font-size: 0.85em; line-height: 1.6; }
+
+        .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; max-width: 900px; margin: 0 auto; }
+        .contact-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; text-align: center; transition: all 0.3s; }
+        .contact-card:hover { border-color: var(--green); transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,255,127,0.1); }
+        .cc-icon { font-size: 2em; margin-bottom: 0.8rem; }
+        .contact-card h4 { color: var(--green); font-size: 0.95em; margin-bottom: 0.5rem; }
+        .contact-card a { color: #aaa; text-decoration: none; font-size: 0.88em; transition: color 0.3s; }
+        .contact-card a:hover { color: var(--green); }
+        .contact-card p { color: #aaa; font-size: 0.88em; }
+
+        footer { text-align: center; padding: 2rem; color: #444; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); position: relative; z-index: 1; }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 900px) {
+            .about-grid, .sna-body, .exp-secondary-grid, .edu-grid { grid-template-columns: 1fr; }
+            .about-highlights { grid-template-columns: 1fr 1fr; }
+            .sna-header { flex-direction: column; }
+        }
+        @media (max-width: 768px) {
+            .nav-menu { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: rgba(5,10,14,0.98); padding: 1rem; border-bottom: 1px solid var(--border); }
+            .nav-menu.open { display: flex; }
+            .hamburger { display: block; }
+            .hero-content h1 { font-size: 2.5em; }
+            .hero-stats { gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-animation">
+    <div class="circuit-lines"></div>
+    <div class="particles" id="particles"></div>
+</div>
+
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+        <div class="logo">KM <span>Engineer</span></div>
+        <ul class="nav-menu">
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#education">Education</a></li>
+            <li><a href="#research">Research</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="hamburger" onclick="toggleMenu()">&#9776;</div>
+    </div>
+</nav>
+
+<section id="hero">
+    <div class="hero-content">
+        <p class="hero-tag">&#9889; Control & Automation Engineer</p>
+        <h1>Kevin <span class="highlight">Morkar</span></h1>
+        <p class="hero-sub">UK-Based Industrial Expert | PLC Commissioning | PID Optimization | Instrumentation Diagnostics</p>
+        <div class="hero-stats">
+            <div class="hero-stat"><span>3+</span><p>Years UK Experience</p></div>
+            <div class="hero-stat"><span>15-20%</span><p>Downtime Reduction</p></div>
+            <div class="hero-stat"><span>5+</span><p>Years Total Experience</p></div>
+            <div class="hero-stat"><span>EU</span><p>Open to Relocation</p></div>
+        </div>
+        <div class="hero-btns">
+            <a href="#experience" class="btn-primary">View Experience</a>
+            <a href="#contact" class="btn-secondary">Contact Me</a>
+        </div>
+    </div>
+    <div class="scroll-indicator">
+        <div class="scroll-arrow"></div>
+        <p>Scroll Down</p>
+    </div>
+</section>
+
+<section id="about" class="section">
+    <div class="container">
+        <h2 class="section-title">About Me</h2>
+        <div class="about-grid">
+            <div class="about-text">
+                <p>I am a <strong>Control & Automation Engineer</strong> with UK-based industrial experience in PLC commissioning, instrumentation diagnostics, and industrial process optimization. I have worked in energy and utility environments with strong expertise in system troubleshooting, PID control, sensor calibration, and reliability improvement.</p>
+                <p>Committed to ensuring <strong>operational safety</strong>, performance efficiency, and compliance with industrial standards. Open to relocation within the EU.</p>
+                <div class="about-tags">
+                    <span>&#128205; Surat, Gujarat, India</span>
+                    <span>&#128222; +91 8799608668</span>
+                    <span>&#9993; kevinmorkar@gmail.com</span>
+                    <span>&#127758; Open to EU Relocation</span>
+                </div>
+            </div>
+            <div class="about-highlights">
+                <div class="highlight-card"><div class="hc-icon">&#9881;</div><h4>PLC Systems</h4><p>Siemens TIA Portal, Allen Bradley, ABB</p></div>
+                <div class="highlight-card"><div class="hc-icon">&#128268;</div><h4>Protocols</h4><p>Modbus, CAN, HART, Profibus</p></div>
+                <div class="highlight-card"><div class="hc-icon">&#128200;</div><h4>PID Control</h4><p>Real-time Loop Optimization</p></div>
+                <div class="highlight-card"><div class="hc-icon">&#9889;</div><h4>Safety</h4><p>LOTO, Industrial Compliance</p></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="experience" class="section dark-section">
+    <div class="container">
+        <h2 class="section-title">Professional Experience</h2>
+        <div class="sn-autohaus-wrapper">
+            <div class="sn-badge">&#11088; Featured Role</div>
+            <div class="sn-autohaus-card">
+                <div class="sna-header">
+                    <div class="sna-title-block">
+                        <h3>Control & Automation Engineer</h3>
+                        <h4>SN Autohaus Co Ltd., London, UK</h4>
+                        <span class="sna-date">&#128197; Dec 2022 &mdash; Dec 2025 &nbsp;|&nbsp; 3 Years</span>
+                    </div>
+                    <div class="sna-impact">
+                        <div class="impact-stat"><span>15-20%</span><p>Downtime Reduced</p></div>
+                        <div class="impact-stat"><span>100%</span><p>Safety Compliance</p></div>
+                        <div class="impact-stat"><span>Multi</span><p>OEM Coordination</p></div>
+                    </div>
+                </div>
+                <div class="sna-body">
+                    <div class="sna-col">
+                        <h5>&#128295; Core Responsibilities</h5>
+                        <ul>
+                            <li>Led installation, commissioning & tuning of electronic, electromechanical & automated control systems for industrial process, energy & plant equipment ensuring system stability and operational safety</li>
+                            <li>Performed troubleshooting & root cause analysis on sensors, controllers, actuators & communication systems resolving faults to minimize downtime</li>
+                            <li>Calibrated pressure, flow, temperature & electrical sensors to ensure accuracy, reliability & stable control performance in regulated environments</li>
+                            <li>Analyzed real-time system data to optimize stability, response time & operational safety using control loop techniques & diagnostics tools</li>
+                        </ul>
+                    </div>
+                    <div class="sna-col">
+                        <h5>&#128200; Key Achievements</h5>
+                        <ul>
+                            <li>Implemented preventive maintenance programs & reliability engineering practices <strong>reducing unplanned downtime by 15-20%</strong></li>
+                            <li>Produced technical documentation including calibration reports, fault analysis, commissioning records, maintenance logs & SOPs</li>
+                            <li>Supported control & instrumentation in energy, compressed air & process equipment including hydrogen & utility plant operations</li>
+                            <li>Applied Lockout/Tagout (LOTO) & safety procedures handling high-energy electrical & mechanical systems ensuring full compliance</li>
+                            <li>Coordinated with OEMs & engineering teams for firmware upgrades, hardware integration & process optimization</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="sna-tools">
+                    <span>Siemens TIA Portal</span><span>Allen Bradley</span><span>ABB</span><span>PID Tuning</span><span>SCADA/DCS</span><span>Modbus</span><span>HART</span><span>Profibus</span><span>LOTO</span><span>AutoCAD Electrical</span>
+                </div>
+            </div>
+        </div>
+        <div class="exp-secondary-grid">
+            <div class="exp-secondary-card">
+                <div class="esc-header">
+                    <h3>Electrical Supervisor</h3>
+                    <h4>Essar Power Ltd., Hazira, India</h4>
+                    <span class="esc-date">&#128197; Sep 2020 &mdash; Aug 2021</span>
+                </div>
+                <div class="esc-body">
+                    <ul>
+                        <li>Supervised electrical & control technicians supporting thermal power plant & utility systems ensuring safe & reliable operations</li>
+                        <li>Monitored & maintained LV/MV electrical distribution systems, switchgear, transformers & Motor Control Centers (MCC)</li>
+                        <li>Supported troubleshooting of control circuits, protection relays & instrumentation to minimize operational disruptions</li>
+                        <li>Interpreted electrical schematics, single-line diagrams & P&ID drawings for diagnostics & maintenance planning</li>
+                        <li>Coordinated preventive maintenance ensuring compliance with plant safety standards & regulatory requirements</li>
+                        <li>Assisted in shutdown & startup procedures ensuring adherence to safety protocols</li>
+                    </ul>
+                </div>
+                <div class="esc-tags"><span>Thermal Power</span><span>LV/MV Systems</span><span>Switchgear</span><span>P&ID</span><span>Protection Relays</span></div>
+            </div>
+            <div class="exp-secondary-card">
+                <div class="esc-header">
+                    <h3>Trainee Engineer</h3>
+                    <h4>Dakshin Gujarat Vij Co. Ltd. (DGVCL)</h4>
+                    <span class="esc-date">&#128197; Jun 2020 &mdash; Jul 2020</span>
+                </div>
+                <div class="esc-body">
+                    <ul>
+                        <li>Collaborated with a team of 15 engineers on design & maintenance of substation electrical equipment</li>
+                        <li>Developed single-line diagrams & gained practical experience in substation regulations & design codes</li>
+                        <li>Applied academic knowledge to resolve engineering challenges using switchgear & protection methods</li>
+                    </ul>
+                </div>
+                <div class="esc-tags"><span>Substation Design</span><span>Single-Line Diagrams</span><span>Switchgear</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="skills" class="section">
+    <div class="container">
+        <h2 class="section-title">Technical Skills</h2>
+        <div class="skills-container">
+            <div class="skill-bar-item"><div class="skill-label"><span>Industrial PLC Systems (Siemens, Allen Bradley, ABB)</span><span class="skill-pct">95%</span></div><div class="skill-track"><div class="skill-fill" data-w="95"></div></div></div>
+            <div class="skill-bar-item"><div class="skill-label"><span>PID Tuning & Control Loop Optimization</span><span class="skill-pct">92%</span></div><div class="skill-track"><div class="skill-fill" data-w="92"></div></div></div>
+            <div class="skill-bar-item"><div class="skill-label"><span>Sensors & Instrumentation (Pressure, Flow, Temp)</span><span class="skill-pct">93%</span></div><div class="skill-track"><div class="skill-fill" data-w="93"></div></div></div>
+            <div class="skill-bar-item"><div class="skill-label"><span>SCADA / DCS Environments</span><span class="skill-pct">88%</span></div><div class="skill-track"><div class="skill-fill" data-w="88"></div></div></div>
+            <div class="skill-bar-item"><div class="skill-label"><span>Communication Protocols (Modbus, HART, Profibus, CAN)</span><span class="skill-pct">87%</span></div><div class="skill-track"><div class="skill-fill" data-w="87"></div></div></div>
+            <div class="skill-bar-item"><div class="skill-label"><span>Fault Diagnostics & Root Cause Analysis</span><span class="skill-pct">94%</span></div><div class="skill-track"><div class="skill-fill" data-w="94"></div></div></div>
+            <div class="skill-bar-item"><div class="skill-label"><span>AutoCAD Electrical & Technical Documentation</span><span class="skill-pct">85%</span></div><div class="skill-track"><div class="skill-fill" data-w="85"></div></div></div>
+            <div class="skill-bar-item"><div class="skill-label"><span>Reliability Engineering & Preventive Maintenance</span><span class="skill-pct">90%</span></div><div class="skill-track"><div class="skill-fill" data-w="90"></div></div></div>
+        </div>
+    </div>
+</section>
+
+<section id="education" class="section dark-section">
+    <div class="container">
+        <h2 class="section-title">Education</h2>
+        <div class="edu-grid">
+            <div class="edu-card">
+                <div class="edu-icon">&#127891;</div>
+                <div class="edu-content">
+                    <span class="edu-degree">MSc Electronics Engineering</span>
+                    <span class="edu-school">De Montfort University, Leicester, UK</span>
+                    <span class="edu-year">Oct 2021 &mdash; Nov 2022</span>
+                    <p>Advanced studies in electronics, control systems, signal processing and embedded systems engineering at a leading UK university.</p>
+                </div>
+            </div>
+            <div class="edu-card">
+                <div class="edu-icon">&#127979;</div>
+                <div class="edu-content">
+                    <span class="edu-degree">BEng Electrical Engineering</span>
+                    <span class="edu-school">Sarvajanik College of Engineering & Technology, Surat</span>
+                    <span class="edu-year">Aug 2016 &mdash; Aug 2020</span>
+                    <p>Core electrical engineering foundation including power systems, control theory, circuit analysis and industrial automation.</p>
+                </div>
+            </div>
+        </div>
+        <h3 class="sub-title">Languages</h3>
+        <div class="lang-grid">
+            <div class="lang-card"><span class="lang-flag">&#127468;&#127463;</span><span class="lang-name">English</span><span class="lang-level native">Native</span></div>
+            <div class="lang-card"><span class="lang-flag">&#127470;&#127475;</span><span class="lang-name">Hindi</span><span class="lang-level native">Native</span></div>
+            <div class="lang-card"><span class="lang-flag">&#127477;&#127473;</span><span class="lang-name">Polish</span><span class="lang-level b1">B1</span></div>
+        </div>
+    </div>
+</section>
+
+<section id="research" class="section">
+    <div class="container">
+        <h2 class="section-title">Scientific Research Interests</h2>
+        <div class="research-grid">
+            <div class="research-card" onclick="this.classList.toggle('active')"><div class="rc-icon">&#9889;</div><h4>Smart Grid & Energy Automation</h4><p>Exploring intelligent grid control systems, demand-response optimization and autonomous energy distribution through advanced automation techniques.</p></div>
+            <div class="research-card" onclick="this.classList.toggle('active')"><div class="rc-icon">&#129302;</div><h4>Industrial IoT & Industry 4.0</h4><p>Integration of connected sensors, edge computing and real-time data acquisition in industrial control environments for predictive maintenance.</p></div>
+            <div class="research-card" onclick="this.classList.toggle('active')"><div class="rc-icon">&#128200;</div><h4>Advanced PID & Adaptive Control</h4><p>Research into model predictive control (MPC), fuzzy logic controllers and self-tuning algorithms for complex industrial process environments.</p></div>
+            <div class="research-card" onclick="this.classList.toggle('active')"><div class="rc-icon">&#127981;</div><h4>Hydrogen & Green Energy Systems</h4><p>Control and instrumentation for hydrogen production, storage and utility plant operations aligned with net-zero industrial transitions.</p></div>
+            <div class="research-card" onclick="this.classList.toggle('active')"><div class="rc-icon">&#128295;</div><h4>Predictive Maintenance & AI Diagnostics</h4><p>Applying machine learning models to sensor data streams for fault prediction, anomaly detection and zero-downtime industrial operations.</p></div>
+            <div class="research-card" onclick="this.classList.toggle('active')"><div class="rc-icon">&#128268;</div><h4>Embedded Systems & Real-Time Control</h4><p>Development of embedded controllers for real-time automation, fast-response actuation and precision control in safety-critical systems.</p></div>
+        </div>
+    </div>
+</section>
+
+<section id="contact" class="section dark-section">
+    <div class="container">
+        <h2 class="section-title">Get In Touch</h2>
+        <div class="contact-grid">
+            <div class="contact-card"><div class="cc-icon">&#9993;</div><h4>Email</h4><a href="mailto:kevinmorkar@gmail.com">kevinmorkar@gmail.com</a></div>
+            <div class="contact-card"><div class="cc-icon">&#128222;</div><h4>Phone</h4><a href="tel:+918799608668">+91 8799608668</a></div>
+            <div class="contact-card"><div class="cc-icon">&#128205;</div><h4>Location</h4><p>Surat, Gujarat 395005, India</p></div>
+            <div class="contact-card"><div class="cc-icon">&#127758;</div><h4>Availability</h4><p>Open to Relocation &mdash; EU</p></div>
+        </div>
+    </div>
+</section>
+
+<footer><p>&copy; 2026 Kevin Morkar &mdash; Control & Automation Engineer</p></footer>
+
+<script>
+    window.addEventListener('scroll', () => {
+        document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+    });
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', e => {
+            e.preventDefault();
+            document.querySelector(a.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+    function toggleMenu() {
+        document.querySelector('.nav-menu').classList.toggle('open');
+    }
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.querySelectorAll('.skill-fill').forEach(bar => {
+                    bar.style.width = bar.dataset.w + '%';
+                });
+            }
+        });
+    }, { threshold: 0.2 });
+    document.querySelectorAll('section').forEach(sec => observer.observe(sec));
+    const pc = document.getElementById('particles');
+    for (let i = 0; i < 30; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.cssText = `left:${Math.random()*100}%;animation-delay:${Math.random()*10}s;animation-duration:${10+Math.random()*15}s;width:${2+Math.random()*4}px;height:${2+Math.random()*4}px`;
+        pc.appendChild(p);
+    }
+</script>
+</body>
+</html>
